@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-socket-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-socket-service
+  template:
+    metadata:
+      labels:
+        app: my-socket-service
+    spec:
+      containers:
+      - name: my-socket-service
+        image: feedsignalr
+        imagePullPolicy: Never
+        ports:
+         - containerPort: 45009
+        expose:
+         - '6379'
+        volumes:
+         - /home/avner/avner/certs:/etc/certs
+         - /home/avner/avner/redis/conf:/etc/redis
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-socket-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: my-socket-service
+  ports:
+  - protocol: TCP
+    port: 45009
+    targetPort: 45009     
+  externalIPs:
+  - "172.16.17.138"
