@@ -16,6 +16,8 @@ spec:
         - name: my-socket-service
           image: feedsignalr
           imagePullPolicy: Never
+          ports:
+          - containerPort: 80
           
 
 ---
@@ -24,12 +26,13 @@ kind: Service
 metadata:
   name: my-socket-service
 spec:
-  type: LoadBalancer
-  selector:
-    app: my-socket-service
   ports:
-    - port: 45008
-      targetPort: 45009
+    - port: 80                               
+      targetPort: 80
+  selector:
+    name: deployment                    
+  type: ClusterIP
+  
        
    
   
